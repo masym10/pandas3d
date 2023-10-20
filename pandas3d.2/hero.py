@@ -7,6 +7,7 @@ class Hero:
         self.hero.setPos(pos)
         self.hero.reparentTo(render)
         self.accept_events()
+        self.cameraOn = False
 
     def cameraBind(self):
         base.disableMouse()
@@ -49,6 +50,11 @@ class Hero:
         return x+dy, y+dy, z
     
     def forward(self):
+        angle = ((self.hero.getH() - 360) % 360)
+        pos = self.lookAt(angle)
+        self.hero.setPos(pos)
+
+    def forwardBack(self):
         angle = ((self.hero.getH() + 180) % 360)
         pos = self.lookAt(angle)
         self.hero.setPos(pos)
@@ -65,3 +71,7 @@ class Hero:
         base.accept('m', self.turnRight)
         base.accept('m-repeat', self.turnRight)
         base.accept('c', self.changView)
+        base.accept('w', self.forward)
+        base.accept('w-repeat', self.forward)
+        base.accept('s', self.forwardBack)
+        base.accept('s-repeat', self.forwardBack)
