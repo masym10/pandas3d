@@ -59,6 +59,16 @@ class Hero:
         pos = self.lookAt(angle)
         self.hero.setPos(pos)
 
+    def forwardLeft(self):
+        angle = ((self.hero.getH() - 90) % 360)
+        pos = self.lookAt(angle)
+        self.hero.setPos(pos)
+
+    def forwardRight(self):
+        angle = ((self.hero.getH() + 90) % 360)
+        pos = self.lookAt(angle)
+        self.hero.setPos(pos)
+
     def turnLeft(self):
         self.hero.setH((self.hero.getH()+5) % 360)
 
@@ -75,3 +85,7 @@ class Hero:
         base.accept('w-repeat', self.forward)
         base.accept('s', self.forwardBack)
         base.accept('s-repeat', self.forwardBack)
+        base.accept('a', self.forwardLeft)
+        base.accept('a-repeat', self.forwardLeft)
+        base.accept('d', self.forwardRight)
+        base.accept('d-repeat', self.forwardRight)
