@@ -22,7 +22,12 @@ class MapManager:
         block.setTexture(block_texture)
         block.setPos(position)
         block.setColor(self.color)
+
+        block.setTag('at', str(position))
+
         block.reparentTo(self.land)
+
+
 
     def loadMap(self, filename):
         """зчитування карти
@@ -37,3 +42,21 @@ class MapManager:
                         self.addBlock((x,y,z))
                     x +=1
                 y +=1
+    
+    def findBlocks(self, pos):
+        return self.land.findAllMatches("=at="+str(pos))
+
+    def isEmpty(self, pos):
+        blocks = self.findBlocks(pos)
+        if blocks:
+            return False
+        else:
+            return True
+
+    def findHightestEmpty(self, pos):
+        x, y, z = pos
+        z = 1
+        while not self.isEmpty((x, y, z)):
+            z +=1
+
+        return (x, y, z)

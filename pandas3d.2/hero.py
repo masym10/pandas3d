@@ -8,6 +8,7 @@ class Hero:
         self.hero.reparentTo(render)
         self.accept_events()
         self.cameraOn = False
+        self.mode = True
 
     def cameraBind(self):
         base.disableMouse()
@@ -40,6 +41,14 @@ class Hero:
             return (1, 1)
         elif angle <= 200:
             return (0, 1)
+        elif angle <= 245:
+            return(-1, 1)
+        elif angle <= 290:
+            return(-1, 0)
+        elif angle <= 335:
+            return (-1, -1)
+        else:
+            return(0, -1)
         
     def lookAt(self, angle):
         x = round(self.hero.getX())
@@ -49,25 +58,52 @@ class Hero:
         dx, dy = self.check_dir(angle)
         return x+dy, y+dy, z
     
-    def forward(self):
-        angle = ((self.hero.getH() - 360) % 360)
-        pos = self.lookAt(angle)
+    def justMove(self, angel):
+        pos = self.lookAt(angel)
         self.hero.setPos(pos)
+
+    def tryMove(self, angel):
+        pos = self.lookAt(angel)
+        if self.land.isEmpty(pos):
+            pos = self.land.findHightestEmpty(pos)
+            self.hero.setPos(pos)
+        else:
+            pos = pos[0], pos[1], pos[2] + 1
+            if self.land.isEmpty(pos):
+                self.hero.setPos(pos)
+        
+    def changeMode(self):
+        self.mode = not self.mode
+
+    def moveTo(self, angel):
+        if self.mode == True:
+            self.justMove(angel)
+        else:
+            self.tryMove(angel)
+        
+    def forward(self):
+        angle = self.hero.getH() % 360
+        self.moveTo(angle)
 
     def forwardBack(self):
-        angle = ((self.hero.getH() + 180) % 360)
-        pos = self.lookAt(angle)
-        self.hero.setPos(pos)
+        angle = (self.hero.getH() + 180) % 360
+        self.moveTo(angle)
 
     def forwardLeft(self):
-        angle = ((self.hero.getH() - 90) % 360)
-        pos = self.lookAt(angle)
-        self.hero.setPos(pos)
+        angle = (self.hero.getH() + 90) % 360
+        self.moveTo(angle)
 
     def forwardRight(self):
-        angle = ((self.hero.getH() + 90) % 360)
-        pos = self.lookAt(angle)
-        self.hero.setPos(pos)
+        angle = (self.hero.getH() - 90) % 360
+        self.moveTo(angle)
+
+    def up(self):
+        if self.mode:
+            self.hero.setZ(self.hero.getZ() + 1)
+
+    def down(self):
+        if self.hero.getZ() > 1 and self.mode:
+            self.hero.setZ(self.hero.getZ() - 1)
 
     def turnLeft(self):
         self.hero.setH((self.hero.getH()+5) % 360)
@@ -89,3 +125,11 @@ class Hero:
         base.accept('a-repeat', self.forwardLeft)
         base.accept('d', self.forwardRight)
         base.accept('d-repeat', self.forwardRight)
+
+        base.accept('q', self.up)
+        base.accept('q-repeat', self.up)
+
+        base.accept('e', self.down)
+        base.accept('e-repeat', self.down)
+
+        base.accept('z', self.changeMode)
