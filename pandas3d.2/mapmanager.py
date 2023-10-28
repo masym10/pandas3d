@@ -1,3 +1,5 @@
+import pickle
+
 class MapManager:
     def __init__(self):
         self.model = 'model/block/block.egg'
@@ -27,7 +29,23 @@ class MapManager:
 
         block.reparentTo(self.land)
 
+    def delBlock(self, position):
+       blocks = self.findBlocks(position)
+       for block in blocks:
+           block.removeNode()
 
+    def delBlockFrom(self, position):
+        x, y, z = self.findHightestEmpty(position)
+        pos = x, y, z-1
+        blocks = self.findBlocks(position)
+        for block in blocks:
+            block.removeNode()
+    
+    def buildBlock(self, pos):
+        x, y, z = pos
+        new_pos = self.findHightestEmpty(pos)
+        if new_pos[2] <=z + 1:
+            self.addBlock(new_pos)
 
     def loadMap(self, filename):
         """зчитування карти
@@ -43,6 +61,31 @@ class MapManager:
                     x +=1
                 y +=1
     
+    def saveMap(self):
+        blocks = self.land.getChildren()
+        with open('map.dat' 'wb') as file:
+            pickle.dump(len(blocks), file)
+            for block in blocks:
+                x, y, z = block.getPos()
+                pos = (int(x), int(y), int(z))
+                pickle.dump(pos, file)
+
+    def startNew(self):
+        self.land = render.attachNewNode("Land")
+
+    def clear(self):
+        self.land.removeNote()
+        self.startNew()
+
+    def load_map(self):
+        self.clear()
+        with open('map.dat', 'rb') as file:
+            lenght = pickle.load(file)
+            
+            for i in range(lenght):
+                pos = pickle.load(file)
+                self.addBlock(pos)
+
     def findBlocks(self, pos):
         return self.land.findAllMatches("=at="+str(pos))
 

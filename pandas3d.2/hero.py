@@ -33,20 +33,28 @@ class Hero:
     def check_dir(self, angle):
         if angle >= 0 and angle <= 20:
             return (0, -1)
+        
         elif angle <= 65:
             return (1, -1)
+        
         elif angle <= 110:
             return (1, 0)
+        
         elif angle <= 155:
             return (1, 1)
+        
         elif angle <= 200:
             return (0, 1)
+        
         elif angle <= 245:
             return(-1, 1)
+        
         elif angle <= 290:
             return(-1, 0)
+        
         elif angle <= 335:
             return (-1, -1)
+        
         else:
             return(0, -1)
         
@@ -111,6 +119,24 @@ class Hero:
     def turnRight(self):
         self.hero.setH((self.hero.getH()-5) % 360)
 
+    def build(self):
+        angle = self.hero.getH() % 360
+        pos = self.lookAt(angle)
+        
+        if self.mode:
+            self.land.addBlock(pos)
+
+        else:
+            self.land.buildBlock(pos)
+        
+    def destroy(self):
+        angle = self.hero.getH() % 360
+        pos = self.lookAt(angle)
+        if self.mode:
+            self.land.delBlock(pos)
+        else:
+            self.land.delBlockFrom(pos)
+        
     def accept_events(self):
         base.accept('n', self.turnLeft)
         base.accept('n-repeat', self.turnLeft)
@@ -133,3 +159,6 @@ class Hero:
         base.accept('e-repeat', self.down)
 
         base.accept('z', self.changeMode)
+
+        base.accept('b', self.build)
+        base.accept('v', self.destroy)
