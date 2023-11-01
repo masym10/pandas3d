@@ -1,3 +1,5 @@
+from mapmanager import MapManager
+
 class Hero:
     def __init__(self, pos, land):
         self.land = land
@@ -136,6 +138,12 @@ class Hero:
             self.land.delBlock(pos)
         else:
             self.land.delBlockFrom(pos)
+
+    def saveMapPlayer(self):
+        self.land.saveMap()
+    
+    def loadMapPlayer(self):
+        self.land.load_map()
         
     def accept_events(self):
         base.accept('n', self.turnLeft)
@@ -162,3 +170,5 @@ class Hero:
 
         base.accept('b', self.build)
         base.accept('v', self.destroy)
+        base.accept('p', self.saveMapPlayer)
+        base.accept('o', self.loadMapPlayer)
