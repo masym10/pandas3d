@@ -34,11 +34,10 @@ class MapManager:
        for block in blocks:
            block.removeNode()
 
-    def delBlockFrom(self, position):
-        x, y, z = self.findHightestEmpty(position)
+    def delBlockFrom(self, pos):
+        x, y, z = self.findHightestEmpty(pos)
         pos = x, y, z-1
-        blocks = self.findBlocks(position)
-        for block in blocks:
+        for block in self.findBlocks(pos):
             block.removeNode()
     
     def buildBlock(self, pos):
@@ -74,8 +73,8 @@ class MapManager:
         self.land = render.attachNewNode("Land")
 
     def clear(self):
-        self.land.removeNote()
-        self.startNew()
+        self.land.removeNode()
+        self.addNew()
 
     def load_map(self):
         self.clear()
